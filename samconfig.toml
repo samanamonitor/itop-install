@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "iTopNexmoCallAgent"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1w82o0awen7tc"
+s3_prefix = "iTopNexmoCallAgent"
+region = "us-east-1"
+profile = "samana"
+capabilities = "CAPABILITY_IAM"
+

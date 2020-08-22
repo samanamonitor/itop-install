@@ -1,0 +1,59 @@
+{
+    "StartAt": "Call Agent",
+    "States": {
+      "Call Agent": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopCallAgentStepFunction-1L5Z9R65VV1K4:$LATEST",
+        "TimeoutSeconds": 60,
+        "HeartbeatSeconds": 30,
+        "Next": "WaitXSeconds"
+      },
+      "WaitXSeconds": {
+        "Type": "Wait",
+        "Seconds": 20,
+        "Next": "CheckCallerWaiting"
+      },
+      "CheckAgentCall": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopCheckAgentCallFunction-VJ1BPTPAZ2MZ",
+        "TimeoutSeconds": 60,
+        "HeartbeatSeconds": 30,
+        "ResultPath": "$.activeagent",
+        "Next": "ActiveAgentCall?"
+      },
+      "ActiveAgentCall?": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.activeagent",
+            "NumericEquals": 0,
+            "Next": "Call Agent"
+          }
+        ],
+        "Default": "WaitXSeconds"
+      },
+      "CheckCallerWaiting": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopIsCallerWaitingFunction-LYW40YIJJ7GQ",
+        "TimeoutSeconds": 60,
+        "HeartbeatSeconds": 30,
+        "ResultPath": "$.callerwaiting",
+        "Next": "IsCallerWaiting?"
+      },
+      "IsCallerWaiting?": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.callerwaiting",
+            "NumericEquals": 0,
+            "Next": "FinishCall"
+          }
+        ],
+        "Default": "CheckAgentCall"
+      },
+      "FinishCall": {
+        "End": true,
+        "Type": "Pass"
+      }
+    }
+  }

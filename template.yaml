@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  itop_nexmo
+
+  A collection of Lambdas invoked in a call agent step function
+
+Globals:
+  Function:
+    Environment:
+      Variables:
+        config_table: iTopNexmoPhoneConfig
+
+Resources:
+
+  CallAgentStateMachine:
+    Type: AWS::Serverless::StateMachine # More info about State Machine Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-statemachine.html
+    Properties:
+      DefinitionUri: statemachine/iTop_Call_Agent.asl.json
+      Role: arn:aws:iam::438136544486:role/service-role/StatesExecutionRole-us-east-1
+
+  # ITopNexmoAPIGateway:
+  #   Type: AWS::Serverless::Api
+  #   Properties:
+  #     StageName: dev
+  #     DefinitionUri: 
+
+  ITopAlertNextWeekOnCallFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      CodeUri: functions/AlertNextWeekOnCall/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+
+  ITopCallAgentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/CallAgent/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+
+  ITopCallAgentStepFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/CallAgentStep/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+
+  ITopCheckAgentCallFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/CheckAgentCall/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+
+  ITopGenerateJWTFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/generateJWT/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+
+  ITopGetRecordingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/GetRecording/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+
+  ITopIsCallerWaitingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/IsCallerWaiting/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+
+  ITopLambdaNexmoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/LambdaNexmo/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+
+  ITopNexmoHandleCallFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/NexmoHandleCall/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+
+  ITopNexmoOnCallPhonesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/iTopOnCallPhones/
+      Handler: app.lambda_handler
+      Runtime: python3.7
