@@ -38,14 +38,14 @@ def handler(event, context):
                     sys._getframe().f_lineno, 
                     "Already attempting to concact agent. Skipping")
             return {}
-    
+
         call = db.Table(config['InboundCallTable']).get_item(Key={ 
             "uuid": inbound_uuid
         })
         if call['Item']['status'] != 'waiting':
             # TODO: remove item from list
             return {}
-    
+
         callstart = datetime.strptime(
             call['Item']['timestamp'], 
             '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -70,7 +70,7 @@ def handler(event, context):
                     "Calling Primary")
             phone = agent_data['primary'][0]['phones'][0]
             email = agent_data['primary'][0]['mail'][0]
-    
+
         
         send_email(email, inbound_phone, inbound_conversation_uuid)
         out = call_agent(phone)
@@ -101,9 +101,9 @@ def call_agent(phone):
                 'phone': phone,
                 'caller_id': config['callerID'],
                 'time': datetime.now().isoformat(' ')
-                }))
+                }).encode())
         response = client.invoke(
-            FunctionName='CallAgent',
+            FunctionName='iTopNexmoCallAgent-ITopCallAgentFunction-1F8HOOMY5666A',
             InvocationType='RequestResponse',
             Payload=p
             )
@@ -150,7 +150,7 @@ def db_addcall_outqueue(data):
             "uuid": data['uuid'],
             "data": data
         })
-    except:
+    except Exception as e:
         error(sys._getframe().f_code.co_name, 
             sys._getframe().f_lineno, 
             "Unable to register call into Queue. %s %s" % (type(e).__name__, e.args[0]))

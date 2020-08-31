@@ -112,7 +112,16 @@ def notnone(val1, val2, default):
     else:
         return default
 
+def debug(funcname, lineno, msg):
+    if 'logLevel' not in config:
+        return
+    if config['logLevel'] >= 3:
+        print("DEBUG(%s:%d): %s" % (funcname, lineno, msg))
+
 def fetch_oncall_numbers():
+    debug(sys._getframe().f_code.co_name, 
+            sys._getframe().f_lineno, 
+            "fetching OnCall numbers")
     global config
 
     config = db.Table(config_table).get_item(Key={ 
@@ -143,22 +152,33 @@ def fetch_oncall_numbers():
     jsonRes = res.json()
     return jsonRes.get('objects').popitem()[1].get('fields')
 
+def error(funcname, lineno, msg):
+    print("ERROR(%s:%d): %s" % (funcname, lineno, msg))
+
 def lambda_handler(event, context):
-    # global config
+
+    config =  db.Table(config_table).get_item(Key={ 
+                "Key": "Config" 
+            })['Item']['Value']
 
     contacts = {
-        'primary': [],
-        'backup': [],
-        'manager': []
+        'primary': [config['defaultContact']],
+        'backup': [config['defaultContact']],
+        'manager': [config['defaultContact']]
     }
 
     try:
         numbers = fetch_oncall_numbers()
+        if numbers.get('primary'):
+            contacts['primary'] = numbers.get('primary')
+        if numbers.get('backup'):
+            contacts['backup'] = numbers.get('backup')
+        if numbers.get('manager'):
+            contacts['manager'] = numbers.get('manager')
     except Exception as e:
-        print("ERROR(lambda_handler): %s %s" % (type(e).__name__, e.args[0]))
+        error(sys._getframe().f_code.co_name, 
+            sys._getframe().f_lineno,
+            "ERROR(lambda_handler): %s %s" % (type(e).__name__, e.args[0]))
 
-    contacts['primary'] = numbers.get('primary')
-    contacts['backup'] = numbers.get('backup')
-    contacts['manager'] = numbers.get('manager')
 
     return contacts

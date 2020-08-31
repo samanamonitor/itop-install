@@ -7,5 +7,6 @@ s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1w82o0awen7tc"
 s3_prefix = "iTopNexmoCallAgent"
 region = "us-east-1"
 profile = "samana"
+confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 

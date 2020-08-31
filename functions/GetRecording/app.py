@@ -77,7 +77,7 @@ def generate_jwt(application_id="none", application_private_key="none"):
         }
         client = boto3.client('lambda')
         response = client.invoke(
-                FunctionName='generateJWT',
+                FunctionName='iTopNexmoCallAgent-ITopGenerateJWTFunction-15D3MROZ2NNY3',
                 Payload=json.dumps(data),
                 InvocationType='RequestResponse')
         jwt = json.load(response['Payload'])['data']

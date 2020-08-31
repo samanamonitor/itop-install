@@ -14,7 +14,7 @@ agent_data = {}
 
 def handler(event, context):
     response = {}
-    
+
     global app_url
     global config
     app_url = "https://" + event['params']['header']['Host'] + "/" + event['context']['stage']
@@ -92,10 +92,10 @@ def inbound_sip_hangup(nexmodata):
                 "kwargs": {
                     "action": "hangup"
                     }
-                }))
+                }).encode())
             client = boto3.client('lambda')
             response = client.invoke(
-                FunctionName='LambdaNexmo',
+                FunctionName='iTopNexmoCallAgent-ITopLambdaNexmoFunction-L7Z9NODDJRI3',
                 InvocationType='RequestResponse',
                 Payload=p
                 )
@@ -185,7 +185,7 @@ def inbound_answered(nexmodata):
     
         client = boto3.client('stepfunctions')
         response = client.start_execution(
-            stateMachineArn='arn:aws:states:us-east-1:438136544486:stateMachine:CallAgentStateMachine-xO59mMQjDs4y',
+            stateMachineArn='arn:aws:states:us-east-1:438136544486:stateMachine:CallAgentStateMachine-sbl2yGXvxrvN',
             name=name,
             input='{}'
         )
@@ -444,7 +444,7 @@ def get_phones():
     try:
         client = boto3.client('lambda')
         response = client.invoke(
-            FunctionName='iTopNexmoCallAgent-ITopNexmoOnCallPhonesFunction-1HI8ELO7A5B1E',
+            FunctionName='iTopNexmoCallAgent-ITopNexmoOnCallPhonesFunction-U2BPC04TK17J',
             InvocationType='RequestResponse')
         # TODO implement
         out = json.loads(response['Payload'].read())

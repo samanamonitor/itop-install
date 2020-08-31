@@ -19,21 +19,21 @@ def handler(event, context):
         out = db.Table(config['outboundQueueTable']).scan()
         count = out['Count']
         for i in out['Items']:
-            print(json.dumps(i))
+            print('Outbound call: {}'.format(json.dumps(i)))
             p = bytearray()
             p.extend(json.dumps({
                 'nexmoKey': config['nexmoKey'],
                 'nexmoAppID': config['nexmoAppID'],
                 'method': 'get_call',
                 'uuid': i['uuid']
-                }))
+                }).encode())
             response = client.invoke(
-                FunctionName='LambdaNexmo',
+                FunctionName='arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopLambdaNexmoFunction-L7Z9NODDJRI3',
                 InvocationType='RequestResponse',
                 Payload=p
                 )
             payload = json.load(response['Payload'])
-            print(json.dumps(payload))
+            print('Payload received: {}'.format(json.dumps(payload)))
             if payload['status'] != 'ringing' or payload['status'] != 'answered':
                 response = db.Table(config['outboundQueueTable']).delete_item(Key={'uuid': i['uuid']})
                 count -= 1
