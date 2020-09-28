@@ -6,7 +6,6 @@ import boto3
 from datetime import tzinfo, timedelta, datetime
 import urllib.parse
 from requests import post
-from requests.auth import HTTPBasicAuth
 
 config_table = os.environ['config_table']
 db           = boto3.resource('dynamodb', region_name='us-east-1')
@@ -113,20 +112,18 @@ def notnone(val1, val2, default):
         return default
 
 def debug(funcname, lineno, msg):
+    config =  db.Table(config_table).get_item(Key={ 
+                "Key": "Config" 
+            })['Item']['Value']
     if 'logLevel' not in config:
         return
     if config['logLevel'] >= 3:
         print("DEBUG(%s:%d): %s" % (funcname, lineno, msg))
 
-def fetch_oncall_numbers():
+def fetch_oncall_numbers(config):
     debug(sys._getframe().f_code.co_name, 
             sys._getframe().f_lineno, 
             "fetching OnCall numbers")
-    global config
-
-    config = db.Table(config_table).get_item(Key={ 
-                "Key": "Config" 
-            })['Item']['Value']
 
     itop_ip     = config['itop_ip']
     itop_user   = config['itop_user']
@@ -135,22 +132,34 @@ def fetch_oncall_numbers():
     itop_rest_version = "1.3"
     json_data = {
         "operation":"core/get",
-        "class":"OnCall","key":"SELECT OnCall "\
-            "WHERE day = DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')",
-        "output_fields":"primary,backup,manager"
+        "class":"OnCall",
+        "key":"SELECT OnCall WHERE start_day <= DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')"\
+            " AND DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') <= end_day",
+        "output_fields":"number,email,type"
     }
 
-    query_str = urllib.parse.urlencode({
+    data = {
         'version': itop_rest_version, 
-        'json_data': json.dumps(json_data)
-    })
-    
+        'json_data': json.dumps(json_data),
+        'auth_user': itop_user,
+        'auth_pwd': itop_pw
+    }
     res = post(
-        'http://' + itop_ip + '/itop/webservices/rest.php?' + query_str,
-        auth=HTTPBasicAuth(itop_user, itop_pw)
+        'http://' + itop_ip + '/itop/webservices/rest.php',
+        json=data
     )
     jsonRes = res.json()
-    return jsonRes.get('objects').popitem()[1].get('fields')
+    out = {}
+    for k,v in jsonRes.get('objects').items():
+        if v['fields']['type'] in ['Manager', 'Primary', 'Backup']:
+            out[v['fields']['type'].lower()] = [{
+                'phones': [v['fields'].get('number')],
+                'mail': [v['fields'].get('email')]
+            }]
+    debug(sys._getframe().f_code.co_name, 
+            sys._getframe().f_lineno, 
+            "fetched data: " + json.dumps(out))
+    return out
 
 def error(funcname, lineno, msg):
     print("ERROR(%s:%d): %s" % (funcname, lineno, msg))
@@ -168,13 +177,16 @@ def lambda_handler(event, context):
     }
 
     try:
-        numbers = fetch_oncall_numbers()
-        if numbers.get('primary'):
-            contacts['primary'] = numbers.get('primary')
-        if numbers.get('backup'):
-            contacts['backup'] = numbers.get('backup')
-        if numbers.get('manager'):
-            contacts['manager'] = numbers.get('manager')
+        numbers = fetch_oncall_numbers(config)
+        if 'primary' in numbers:
+            contacts['primary'] = numbers['primary']
+        if 'backup' in numbers:
+            contacts['backup'] = numbers['backup']
+        if 'manager' in numbers:
+            contacts['manager'] = numbers['manager']
+        debug(sys._getframe().f_code.co_name, 
+                sys._getframe().f_lineno, 
+                "OnCallPhones Output: " + json.dumps(contacts))
     except Exception as e:
         error(sys._getframe().f_code.co_name, 
             sys._getframe().f_lineno,

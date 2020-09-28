@@ -1,7 +1,10 @@
-from functions.PodioOnCallPhones import app
 from requests_mock import Mocker
 
 def test_fetch_oncall_numbers(monkeypatch):
+    monkeypatch.setenv('config_table', 'iTopNexmoPhoneConfig', prepend=False)
+
+    from functions.iTopOnCallPhones import app
+
     monkeypatch.setenv('itop_ip', '127.0.0.1', prepend=False)
     monkeypatch.setenv('itop_user', 'testUser', prepend=False)
     monkeypatch.setenv('itop_pw', 'pw123', prepend=False)

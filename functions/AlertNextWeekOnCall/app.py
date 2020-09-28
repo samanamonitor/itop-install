@@ -4,7 +4,6 @@ import json
 sys.path.insert(0, "./lib")
 import boto3
 from requests import post
-from requests.auth import HTTPBasicAuth
 import urllib.parse
 
 config_table = os.environ['config_table']
@@ -45,24 +44,33 @@ def has_missing_oncall():
         "operation":"core/get",
         "class":"OnCall",
         "key":"SELECT OnCall "\
-            "WHERE day > DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') "\
-            "AND day < DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH),'%Y-%m-%d 00:00:00')",
-        "output_fields":"primary_external_id,backup_external_id,manager_external_id"
+            "WHERE (start_day > DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') "\
+            "OR start_day <= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH),'%Y-%m-%d 00:00:00') ) "\
+            "AND (end_day > DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') "\
+            "OR end_day <= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH),'%Y-%m-%d 00:00:00') )",
+        "output_fields":"type,number,email"
     }
 
-    query_str = urllib.parse.urlencode({
+    data = {
         'version': itop_rest_version, 
-        'json_data': json.dumps(json_data)
-    })
+        'json_data': json.dumps(json_data),
+        'auth_user': itop_user,
+        'auth_pwd': itop_pw
+    }
 
     res = post(
-        'http://' + itop_ip + '/itop/webservices/rest.php?' + query_str,
-        auth=HTTPBasicAuth(itop_user, itop_pw)
+        'http://' + itop_ip + '/itop/webservices/rest.php',
+        json=data
     )
     jsonRes = res.json()
 
     if len(jsonRes.get('objects')) < 3:
         print(len(jsonRes.get('objects')))
+        return True
+
+    # Check if there is a primary, backup and manager
+    scheduledRoles = { val['fields']['type'] for key,val in jsonRes.get('objects').items() }
+    if len(scheduledRoles) < 3 or ('' in scheduledRoles and scheduledRoles < 4):
         return True
 
     for key,val in jsonRes.get('objects').items():
@@ -89,14 +97,16 @@ def get_emails():
         'output_fields':'email'
     }
 
-    query_str = urllib.parse.urlencode({
+    data = {
         'version': itop_rest_version, 
-        'json_data': json.dumps(json_data)
-    })
+        'json_data': json.dumps(json_data),
+        'auth_user': itop_user,
+        'auth_pwd': itop_pw
+    }
 
     res = post(
-        'http://' + itop_ip + '/itop/webservices/rest.php?' + query_str, 
-        auth=HTTPBasicAuth(itop_user, itop_pw),
+        'http://' + itop_ip + '/itop/webservices/rest.php',
+        json=data
     )
     jsonRes = res.json()
 
