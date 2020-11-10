@@ -146,7 +146,7 @@ def fetch_oncall_numbers(config):
     }
     res = post(
         'http://' + itop_ip + '/itop/webservices/rest.php',
-        json=data
+        data=data
     )
     jsonRes = res.json()
     out = {}

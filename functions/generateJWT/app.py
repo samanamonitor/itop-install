@@ -24,7 +24,7 @@ def handler(event, context) :
     return { "data": jwt.encode(
         payload=token_payload,
         key=application_private_key,
-        algorithm='RS256') }
+        algorithm='RS256').decode('UTF-8') }
 
 if __name__ == "__main__":
     event = {

@@ -60,7 +60,7 @@ def has_missing_oncall():
 
     res = post(
         'http://' + itop_ip + '/itop/webservices/rest.php',
-        json=data
+        data=data
     )
     jsonRes = res.json()
 
@@ -106,7 +106,7 @@ def get_emails():
 
     res = post(
         'http://' + itop_ip + '/itop/webservices/rest.php',
-        json=data
+        data=data
     )
     jsonRes = res.json()
 
