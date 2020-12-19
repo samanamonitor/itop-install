@@ -133,8 +133,11 @@ def fetch_oncall_numbers(config):
     json_data = {
         "operation":"core/get",
         "class":"OnCall",
-        "key":"SELECT OnCall WHERE start_day <= DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')"\
-            " AND DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') <= end_day",
+        "key":"SELECT OnCall "
+        "WHERE day <= DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') "
+        "AND DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') <= repeat_until_end_of "
+        "AND DATE_FORMAT(start_time,'%T') <= DATE_FORMAT(NOW(),'%T') "
+        "AND DATE_FORMAT(NOW(),'%T') < DATE_FORMAT(end_time,'%T')",
         "output_fields":"number,email,type"
     }
 

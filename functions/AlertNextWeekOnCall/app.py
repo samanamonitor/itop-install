@@ -13,10 +13,6 @@ config = db.Table(config_table).get_item(Key={
             })['Item']['Value']
 
 def handler(event, context):
-    client_id     = os.environ['client_id']
-    client_secret = os.environ['client_secret']
-    s_app_id      = int(os.environ['s_app_id']) # Staffing app
-    s_app_token   = os.environ['s_app_token']   # Staffing token
 
     if not has_missing_oncall():
         return {}
@@ -26,10 +22,8 @@ def handler(event, context):
         print("ERROR: Cannot get SDMs emails for alert")
         return {}
     
-    if int(t['filtered']) < 1:
-        res = send_email(emails)
-    else:
-        res = {}
+    
+    res = send_email(emails)
 
     return res
 
@@ -39,15 +33,12 @@ def has_missing_oncall():
     itop_pw     = config['itop_pw']
 
     itop_rest_version = "1.3"
-    # TODO: change range for 4 days
     json_data = {
         "operation":"core/get",
         "class":"OnCall",
-        "key":"SELECT OnCall "\
-            "WHERE (start_day > DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') "\
-            "OR start_day <= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH),'%Y-%m-%d 00:00:00') ) "\
-            "AND (end_day > DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') "\
-            "OR end_day <= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH),'%Y-%m-%d 00:00:00') )",
+        "key":"SELECT OnCall "
+        "WHERE (day > DATE_FORMAT(NOW(),'%Y-%m-%d') AND day <= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY),'%Y-%m-%d') ) "
+        "OR (repeat_until_end_of > DATE_FORMAT(NOW(),'%Y-%m-%d') AND repeat_until_end_of <= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY),'%Y-%m-%d') )",
         "output_fields":"type,number,email"
     }
 
@@ -64,8 +55,7 @@ def has_missing_oncall():
     )
     jsonRes = res.json()
 
-    if len(jsonRes.get('objects')) < 3:
-        print(len(jsonRes.get('objects')))
+    if jsonRes.get('objects') is None or len(jsonRes.get('objects')) < 3:
         return True
 
     # Check if there is a primary, backup and manager
@@ -91,9 +81,9 @@ def get_emails():
     json_data = {
         'operation':'core/get',
         'class':'User',
-        'key':'SELECT User ' \
-        + 'JOIN URP_UserProfile ON URP_UserProfile.userid = User.id '\
-        + 'WHERE URP_UserProfile.profileid={}'.format(oncall_scheduler_profileid),
+        'key':'SELECT User '
+        'JOIN URP_UserProfile ON URP_UserProfile.userid = User.id '
+        'WHERE URP_UserProfile.profileid=50'.format(oncall_scheduler_profileid),
         'output_fields':'email'
     }
 
@@ -119,11 +109,11 @@ def send_email(emails):
     message = """
 Hello, this is a message from Samana\'s Phone System.
 
-You are receiving this message, because next week there is no assignment
+You are receiving this message, because for the next four days there is no assignment
 for OnCall. This means that in a few days the system will not be able
 to accept calls, because no agents will be available.
 
-Please access iTop and assign a resource to OnCall for next week.
+Please access iTop and assign a resource to OnCall for the next four days.
 
 If you don't do this whithin the next 24 hours, you'll get this meesage 
 again.
