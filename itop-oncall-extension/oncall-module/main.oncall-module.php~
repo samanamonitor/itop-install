@@ -1,0 +1,7 @@
+class MyEndDateTimeExtension implements iApplicationObjectExtension {
+      public function OnDBInsert($oObject, $oChange = null){
+      	     if(!is_null($oChange) && DBObject::GetClassName($oObject) == 'OnCall'){
+		$oObject->Set('end_datetime', date('Y-m-d 23:59:59', strtotime($oObject->Get('end_day'))));
+	     }
+      }
+}
