@@ -152,16 +152,21 @@ def fetch_oncall_numbers(config):
         data=data
     )
     jsonRes = res.json()
+    debug(sys._getframe().f_code.co_name, 
+            sys._getframe().f_lineno, 
+            "response data: " + json.dumps(jsonRes))
     out = {}
+    if jsonRes['objects'] is None:
+        return out
     for k,v in jsonRes.get('objects').items():
-        if v['fields']['type'] in ['Manager', 'Primary', 'Backup']:
+        if v['fields']['type'] in ['Manager', 'Primary', 'Backup', 'Fallback']:
             out[v['fields']['type'].lower()] = [{
                 'phones': [v['fields'].get('number')],
                 'mail': [v['fields'].get('email')]
             }]
     debug(sys._getframe().f_code.co_name, 
             sys._getframe().f_lineno, 
-            "fetched data: " + json.dumps(out))
+            "cleaned data: " + json.dumps(out))
     return out
 
 def error(funcname, lineno, msg):
@@ -174,19 +179,22 @@ def lambda_handler(event, context):
             })['Item']['Value']
 
     contacts = {
-        'primary': [config['defaultContact']],
-        'backup': [config['defaultContact']],
-        'manager': [config['defaultContact']]
+        'primary': [config['defaultFallbackContact']],
+        'backup': [config['defaultFallbackContact']],
+        'manager': [config['defaultFallbackContact']],
+        'fallback': [config['defaultFallbackContact']]
     }
 
     try:
         numbers = fetch_oncall_numbers(config)
-        if 'primary' in numbers:
-            contacts['primary'] = numbers['primary']
-        if 'backup' in numbers:
-            contacts['backup'] = numbers['backup']
+        if 'fallback' in numbers:
+            contacts['fallback'] = numbers['fallback']
         if 'manager' in numbers:
             contacts['manager'] = numbers['manager']
+        if 'backup' in numbers:
+            contacts['backup'] = numbers['backup']
+        if 'primary' in numbers:
+            contacts['primary'] = numbers['primary']
         debug(sys._getframe().f_code.co_name, 
                 sys._getframe().f_lineno, 
                 "OnCallPhones Output: " + json.dumps(contacts))

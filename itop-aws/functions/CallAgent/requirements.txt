@@ -1,2 +1,2 @@
-nexmo
+vonage
 boto3

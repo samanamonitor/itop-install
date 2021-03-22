@@ -1,6 +1,6 @@
 import sys
 sys.path.insert(0, "./lib")
-import nexmo
+import vonage
 import json
 
 def handler(event, context):
@@ -25,7 +25,7 @@ def handler(event, context):
 
     kwargs = event.get('kwargs')
 
-    client = nexmo.Client(application_id=application_id, private_key=private_key)
+    client = vonage.Client(application_id=application_id, private_key=private_key)
     m = getattr(client, method)
     if m is None:
         print("Invalid Method")

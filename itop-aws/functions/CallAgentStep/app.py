@@ -52,7 +52,13 @@ def handler(event, context):
         now = datetime.utcnow()
         delta = now - callstart
         agent_data = call['Item']['agent_data']
-        if delta.seconds > config['timeToManager']:
+        if delta.seconds > config['timeToFallback']:
+            debug(sys._getframe().f_code.co_name, 
+                    sys._getframe().f_lineno, 
+                    "Calling Fallback")
+            phone = agent_data['fallback'][0]['phones'][0]
+            email = agent_data['fallback'][0]['mail'][0]
+        elif delta.seconds > config['timeToManager']:
             debug(sys._getframe().f_code.co_name, 
                     sys._getframe().f_lineno, 
                     "Calling Manager")

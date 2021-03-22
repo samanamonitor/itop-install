@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.insert(0, "./lib")
-import nexmo
+import vonage
 import re
 import json
 import boto3
@@ -64,7 +64,7 @@ def handler(event, context):
         eurl           = config['outboundEventURL']
         private_key    = '\n'.join(config['nexmoKey'].split('\\n'))
 
-        client = nexmo.Client(application_id=config['nexmoAppID'], private_key=private_key)
+        client = vonage.Client(application_id=config['nexmoAppID'], private_key=private_key)
         agent_call_data = client.create_call({ 
             "to": [{
                 'type':'phone', 
