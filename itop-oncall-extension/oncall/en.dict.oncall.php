@@ -26,5 +26,7 @@ Dict::Add('EN US', 'English', 'English', array(
 	'Class:on_call/Attribute:email+' => 'The person\'s email address',
 	'Class:on_call/Attribute:type' => 'On Call Level',
 	'Class:on_call/Attribute:type+' => 'Incoming call priority has the following decreasing order: Primary, Backup, Manage, and Fallback',
+	'Class:on_call/Attribute:cal_description' => 'Calendar Description',
+	'Class:on_call/Attribute:cal_description+' => 'Description for calendar dashlet',
 ));
 ?>
