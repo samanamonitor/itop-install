@@ -16,6 +16,11 @@
           <attributes>
             <attribute id="name" />
             <attribute id="org_id" />
+            <attribute id="start" />
+            <attribute id="end" />
+            <attribute id="person_external_id" />
+            <attribute id="contact_last_name" />
+            <attribute id="contact_first_name" />
           </attributes>
         </reconciliation>
       </properties>
@@ -64,6 +69,11 @@
           </values>
           <default_value>Primary</default_value>
         </field>
+        <field id="cal_description" xsi:type="AttributeString">
+          <sql>cal_description</sql>
+          <default_value />
+          <is_null_allowed>false</is_null_allowed>
+        </field>
       </fields>
       <methods>
         <method id="DoCheckToWrite" _delta="define">
@@ -76,7 +86,8 @@
               if(!is_null($id) && $id != 0){
                 $oPerson = MetaModel::GetObject('Person', $id, false);
           
-                $this->Set('name',$oPerson->Get('first_name').' '.$oPerson->Get('name'));
+                $this->Set('name',$oPerson->Get('first_name').' '.$oPerson->Get('name').' Start:'.$this->Get('start').', End:'.$this->Get('end'));
+                $this->Set('cal_description',$this->Get('type').': '.$oPerson->Get('first_name').' '.$oPerson->Get('name'));
                 $this->Set('org_id',$oPerson->Get('org_id'));
               }
               parent::DoCheckToWrite();
@@ -152,6 +163,9 @@
             <item id="type">
               <rank>40</rank>
             </item>
+            <item id="cal_description">
+              <rank>50</rank>
+            </item>
           </items>
         </search>
         <list>
@@ -182,6 +196,9 @@
             </item>
             <item id="type">
               <rank>40</rank>
+            </item>
+            <item id="cal_description">
+              <rank>50</rank>
             </item>
           </items>
         </list>
