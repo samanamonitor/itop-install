@@ -71,6 +71,7 @@
 		    <value id="primary">Primary</value>
 		    <value id="backup">Backup</value>
 		    <value id="manager">Manager</value>
+		    <value id="fallback">Fallback</value>
 		  </values>
           <default_value>Primary</default_value>
         </field>
@@ -113,7 +114,8 @@ public function DoCheckToWrite(){
 	}
     }
 }
-]]></code>
+]]>
+</code>
 	</method>
       </methods>
       <!-- <relations> -->
@@ -300,44 +302,101 @@ public function DoCheckToWrite(){
 	  A client allowed to read OnCall, User, and URP_UserProfile
 	</description>
 	<groups>
-	  <group id="OnCallREST">
-	    <actions>
-	      <action id="action:read">allow</action>	    
-	      <action id="action:bulk read">allow</action>
-	    </actions>
-	  </group>
-	</groups>
+          <group id="OnCallREST">
+            <actions>
+              <action id="action:read">allow</action>	    
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
       </profile>
     </profiles>
   </user_rights>
   <dictionaries>
     <dictionary id="EN US">
       <entries>
-	<entry id="Class:OnCall/Attribute:last_name" _delta="define">
-	  <![CDATA[Last Name]]>
-	</entry>
-	<entry id="Class:OnCall/Attribute:first_name" _delta="define">
-	  <![CDATA[First Name]]>
-	</entry>
-	<entry id="Class:OnCall/Attribute:email" _delta="define">
-	  <![CDATA[Email]]>
-	</entry>
-	<entry id="Class:OnCall/Attribute:phone" _delta="define">
-	  <![CDATA[Phone]]>
-	</entry>
-	<entry id="Class:OnCall/Attribute:person_external_id" _delta="define">
-	  <![CDATA[Person]]>
-	</entry>
-	<entry id="Class:Error:RepeatUntilEndOfMustBeGreaterThanDay" _delta="define">
-	  <![CDATA['The repeat until end of date cannot be before the day date']]>
-	</entry>
-	<entry id="Class:Error:EndTimeMustBeGreaterThanStartTime" _delta="define">
-	  <![CDATA['The end time cannot be before the start time']]>
-	</entry>
-	<entry id="Class:Error:StartTimeMustBeSameTimeAsEndTime" _delta="define">
-	  <![CDATA['The start time date must be must be the same as the end time date']]>
-	</entry>
+        <entry id="Class:OnCall/Attribute:last_name" _delta="define">
+          <![CDATA[Last Name]]>
+        </entry>
+        <entry id="Class:OnCall/Attribute:first_name" _delta="define">
+          <![CDATA[First Name]]>
+        </entry>
+        <entry id="Class:OnCall/Attribute:email" _delta="define">
+          <![CDATA[Email]]>
+        </entry>
+        <entry id="Class:OnCall/Attribute:phone" _delta="define">
+          <![CDATA[Phone]]>
+        </entry>
+        <entry id="Class:OnCall/Attribute:person_external_id" _delta="define">
+          <![CDATA[Person]]>
+        </entry>
+        <entry id="Class:Error:RepeatUntilEndOfMustBeGreaterThanDay" _delta="define">
+          <![CDATA['The repeat until end of date cannot be before the day date']]>
+        </entry>
+        <entry id="Class:Error:EndTimeMustBeGreaterThanStartTime" _delta="define">
+          <![CDATA['The end time cannot be before the start time']]>
+        </entry>
+        <entry id="Class:Error:StartTimeMustBeSameTimeAsEndTime" _delta="define">
+          <![CDATA['The start time date must be must be the same as the end time date']]>
+        </entry>
       </entries>
     </dictionary>
   </dictionaries>
+  <snippets>
+  <snippet id="OnCall Dashlet" _delta="define">
+    <placement>core</placement>
+    <rank>100</rank>
+    <content><![CDATA[
+    class DashletOnCall extends Dashlet
+    {
+      public function __construct($oModelReflection, $sId)
+      {
+        parent::__construct($oModelReflection, $sId);
+      }
+
+      static public function GetInfo()
+      {
+        return array(
+          'label' => Dict::S('UI:DashletIframe:OnCall'),
+          'icon' => 'env-'.utils::GetCurrentEnvironment().'/oncall-module/images/calendar-icon.png',
+          'description' => Dict::S('UI:DashletIframe:Description'),
+        );
+      }
+
+      public function GetPropertiesFields(DesignerForm $oForm)
+      {
+        
+      }
+
+      public function Render($oPage, $bEditMode = false, $aExtraParams = array())
+      {
+	$oPage->add_linked_stylesheet("https://cdn.jsdelivr.net/npm/fullcalendar@5.5.1/main.min.css");
+	$oPage->add_linked_script("https://cdn.jsdelivr.net/npm/fullcalendar@5.5.1/main.min.js");
+
+        $sId = utils::GetSafeId('dashlet_iframe_'.($bEditMode? 'edit_' : '').$this->sId);
+
+        $oPage->add('<div class="dashlet-content">');
+
+	$oPage->add('<div id="cal_'.$sId.'"></div>');
+	$oPage->add_script('
+          document.addEventListener("DOMContentLoaded", function() {
+            var calendarEl = document.getElementById("cal_'.$sId.'");
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: "dayGridMonth"
+            });
+            calendar.render();
+          });
+	');
+
+        if($bEditMode)
+        {
+          $oPage->add('<div style="width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; cursor: not-allowed;"></div>');
+        }
+
+        $oPage->add('</div>');
+      }
+    }
+    ]]></content>
+  </snippet>
+  </snippets>
 </itop_design>
