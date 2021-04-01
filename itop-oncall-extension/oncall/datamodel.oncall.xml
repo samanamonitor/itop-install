@@ -2,7 +2,7 @@
 <itop_design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
   <constants></constants>
   <classes>
-    <class id="oncall" _delta="define">
+    <class id="on_call" _delta="define">
       <parent>FunctionalCI</parent>
       <properties>
         <category>bizmodel,searchable,structure</category>
@@ -20,12 +20,12 @@
         </reconciliation>
       </properties>
       <fields>
-        <field id="start" xsi:type="AttributeDate">
+        <field id="start" xsi:type="AttributeDateTime">
           <sql>start</sql>
           <default_value />
           <is_null_allowed>false</is_null_allowed>
         </field>
-        <field id="end" xsi:type="AttributeDate">
+        <field id="end" xsi:type="AttributeDateTime">
           <sql>end</sql>
           <default_value />
           <is_null_allowed>false</is_null_allowed>
@@ -191,38 +191,38 @@
       <fields>
         <field id="type" xsi:type="AttributeEnum">
           <values>
-            <value id="oncall" _define="define">oncall</value>
+            <value id="on_call" _define="define">on_call</value>
           </values>
         </field>
       </fields>
     </class>
   </classes>
   <menus>
-    <!-- <menu id="ConfigManagementOverview" xsi:type="DashboardMenuNode" _delta="must_exist">
+    <menu id="ConfigManagementOverview" xsi:type="DashboardMenuNode" _delta="must_exist">
       <definition>
         <cells>
           <cell id="2" _delta="must_exist">
             <dashlets>
-              <dashlet id="99" xsi:type="DashletBadge" _delta="define">
+              <dashlet id="100" xsi:type="DashletBadge" _delta="define">
                 <rank>8</rank>
-                <class>oncall</class>
+                <class>on_call</class>
               </dashlet>
             </dashlets>
           </cell>
         </cells>
       </definition>
-    </menu> -->
+    </menu>
   </menus>
   <user_rights>
     <groups>
-      <group id="oncallscheduler">
+      <group id="on_callscheduler">
         <classes>
-          <class id="oncall" />
+          <class id="on_call" />
         </classes>
       </group>
-      <group id="oncallREST">
+      <group id="on_callREST">
         <classes>
-          <class id="oncall" />
+          <class id="on_call" />
           <class id="User" />
           <class id="Contact" />
         </classes>
@@ -235,7 +235,7 @@
           A user in charge of assigning employees for oncall. In other words, a user that can create the Functional CI oncall.
         </description>
         <groups>
-          <group id="oncallscheduler">
+          <group id="on_callscheduler">
             <actions>
               <action id="action:write">allow</action>
               <action id="action:bulk write">allow</action>
@@ -251,7 +251,7 @@
           A client allowed to read oncall, User, and URP_UserProfile
         </description>
         <groups>
-          <group id="oncallREST">
+          <group id="on_callREST">
             <actions>
               <action id="action:read">allow</action>
               <action id="action:bulk read">allow</action>
@@ -264,19 +264,19 @@
   <dictionaries>
     <dictionary id="EN US">
       <entries>
-        <entry id="Class:oncall/Attribute:last_name" _delta="define">
+        <entry id="Class:on_call/Attribute:last_name" _delta="define">
           <![CDATA[Last Name]]>
         </entry>
-        <entry id="Class:oncall/Attribute:first_name" _delta="define">
+        <entry id="Class:on_call/Attribute:first_name" _delta="define">
           <![CDATA[First Name]]>
         </entry>
-        <entry id="Class:oncall/Attribute:email" _delta="define">
+        <entry id="Class:on_call/Attribute:email" _delta="define">
           <![CDATA[Email]]>
         </entry>
-        <entry id="Class:oncall/Attribute:phone" _delta="define">
+        <entry id="Class:on_call/Attribute:phone" _delta="define">
           <![CDATA[Phone]]>
         </entry>
-        <entry id="Class:oncall/Attribute:person_external_id" _delta="define">
+        <entry id="Class:on_call/Attribute:person_external_id" _delta="define">
           <![CDATA[Person]]>
         </entry>
         <entry id="Class:Error:EndCannotBeLessThanStart" _delta="define">
