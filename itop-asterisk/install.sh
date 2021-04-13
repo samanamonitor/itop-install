@@ -9,7 +9,10 @@ if ! which docker > /dev/null; then
     apt install -y docker.io
 fi
 
-docker build -t itopasterisk .
+if ! docker inspect itopasterisk:latest > /dev/null; then
+    docker build -t itopasterisk .
+fi
+
 cat <<EOF >> /etc/crontab
-1 *    * * *   root    docker run --name ia -it --rm itopasterisk $1
+1  *    * * *   root    docker run --name ia -it --rm itopasterisk $1
 EOF
