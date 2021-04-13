@@ -2,6 +2,7 @@
 
 Prerequisites:
 * ubuntu
+* ssmtp properly setup if needed for email of changes
 
 to install:
 `./install.sh <queue number>`

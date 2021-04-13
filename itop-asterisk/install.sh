@@ -13,6 +13,8 @@ if ! docker inspect itopasterisk:latest > /dev/null; then
     docker build -t itopasterisk .
 fi
 
-cat <<EOF >> /etc/crontab
-1  *    * * *   root    docker run --name ia -it --rm itopasterisk $1
+cat <<EOF > /etc/cron.d/itopast
+MAILTO='$2'
+
+1  *    * * *   root    docker run --name ia --rm itopasterisk $1
 EOF
