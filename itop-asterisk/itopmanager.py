@@ -22,10 +22,10 @@ class iTopManager:
             "output_fields":output_fields
         }
         self.data = {
-            'version': itop_rest_version, 
+            'version': self.itop_rest_version,
             'json_data': json.dumps(json_data),
-            'auth_user': itop_user,
-            'auth_pwd': itop_pw
+            'auth_user': self.username,
+            'auth_pwd': self.secret
         }
         res = post("%s://%s:%s%s" % (self.protocol, self.host, self.port, self.path), data=data)
         return res.json()
