@@ -16,9 +16,10 @@ class AstManager:
         self.protocol = protocol
         self.prefix=prefix
         self.login()
+
     def _request(self, data):
         qs = urlencode(data)
-        res = s.get('%s://%s:%s%s/mxml?%s' % 
+        res = self.session.get('%s://%s:%s%s/mxml?%s' % 
             (self.protocol, self.host, self.port, self.prefix, qs))
         self.status_code=res.status_code
         if self.status_code != 200:
@@ -40,24 +41,28 @@ class AstManager:
                 self._objects += [ obj ]
         if self._response['response'].lower() == 'error':
             raise AstManagerServerError(self._response['message'])
+
     def login(self):
         self._request({
             'action': 'login',
             'username': self.username,
             'secret': self.secret
             })
+
     def add_member(self, queue, interface):
         self._request({
             'action': 'QueueAdd',
             'Queue': queue,
             'Interface': interface
             })
+
     def remove_member(self, queue, interface):
         self._request({
             'action': 'QueueRemove',
             'Queue': queue,
             'Interface': interface
             })
+
     def get_queue_members(self, queue):
         res = self._request({
             'action': 'QueueStatus',
