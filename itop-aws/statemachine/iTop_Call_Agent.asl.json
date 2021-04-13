@@ -3,7 +3,7 @@
     "States": {
       "Call Agent": {
         "Type": "Task",
-        "Resource": "arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopCallAgentStepFunction-1DGLRWLP2P0TR",
+        "Resource": "arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopCallAgentStepFunction-DIVRV8CUJ9LS",
         "TimeoutSeconds": 60,
         "HeartbeatSeconds": 30,
         "Next": "WaitXSeconds"
@@ -15,7 +15,7 @@
       },
       "CheckAgentCall": {
         "Type": "Task",
-        "Resource": "arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopCheckAgentCallFunction-EYNFYT4OGSCI",
+        "Resource": "arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopCheckAgentCallFunction-4QD2EK56F4VC",
         "TimeoutSeconds": 60,
         "HeartbeatSeconds": 30,
         "ResultPath": "$.activeagent",
@@ -34,7 +34,7 @@
       },
       "CheckCallerWaiting": {
         "Type": "Task",
-        "Resource": "arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopIsCallerWaitingFunction-1FCN9VNT9YIYB",
+        "Resource": "arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopIsCallerWaitingFunction-13ZKASRFO5YZK",
         "TimeoutSeconds": 60,
         "HeartbeatSeconds": 30,
         "ResultPath": "$.callerwaiting",

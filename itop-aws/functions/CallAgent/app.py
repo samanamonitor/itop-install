@@ -38,6 +38,15 @@ def handler(event, context):
                 "Key": "Config" 
             })['Item']['Value']
 
+        inbound_to = event.get('inbound_to', None)
+        if inbound_to is not None:
+            new_config = db.Table(config_table).get_item(Key={
+                "Key": inbound_to
+                })['Item']['Value']
+            config.update(new_config)
+            debug(sys._getframe().f_code.co_name, 
+                sys._getframe().f_lineno,
+                "Merging configurations for %s %s" % (inbound_to, config))
 
         if 'phone' not in event:
             raise Exception("Phone missing")
@@ -63,9 +72,10 @@ def handler(event, context):
         aurl           = config['outboundAnswerURL']
         eurl           = config['outboundEventURL']
         private_key    = '\n'.join(config['nexmoKey'].split('\\n'))
+        print("before vonage")
 
         client = vonage.Client(application_id=config['nexmoAppID'], private_key=private_key)
-        agent_call_data = client.create_call({ 
+        call_data = { 
             "to": [{
                 'type':'phone', 
                 'number': phone
@@ -74,16 +84,30 @@ def handler(event, context):
                 'type': 'phone', 
                 'number': caller_id
                 }, 
-            'answer_url': [ aurl ], 
+            'answer_url': [ aurl ],
             'event_url' : [ eurl ],
             'ringing_timer': int(config['ringTimer']),
             'machine_detection': 'hangup'
-        })
+        }
+        print("before call %s" % call_data)
+        agent_call_data = client.create_call(call_data)
         print("calling: " + json.dumps(agent_call_data))
         db_addcall_queue(agent_call_data['uuid'], agent_call_data, t, phone)
     except Exception as e:
-        print("Exception: " + json.dumps(e.args))
-        agent_call_data = { 'error': e.args[0] }
+        error(sys._getframe().f_code.co_name, 
+                sys._getframe().f_lineno,
+                "Exception: %s" % e)
+        agent_call_data = {}
 
     print("Finished.")
     return agent_call_data
+
+def debug(funcname, lineno, msg):
+    if 'logLevel' not in config:
+        return
+    if config['logLevel'] >= 3:
+        print("DEBUG(%s:%d): %s" % (funcname, lineno, msg))
+
+def error(funcname, lineno, msg):
+    print("ERROR(%s:%d): %s" % (funcname, lineno, msg))
+

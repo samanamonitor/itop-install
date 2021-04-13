@@ -17,12 +17,30 @@ def handler(event, context):
 
     global app_url
     global config
-    app_url = "https://" + event['params']['header']['Host'] + "/" + event['context']['stage']
     try:
 
         config = db.Table(config_table).get_item(Key={ 
                 "Key": "Config" 
             })['Item']['Value']
+
+        nexmodata = {}
+        try:
+            if event['context']['http-method'] == "POST":
+                nexmodata = event['body-json']
+            elif event['context']['http-method'] == "GET":
+                nexmodata = event['params']['querystring']
+
+            new_config = db.Table(config_table).get_item(Key={
+                "Key": nexmodata['to']
+                })['Item']['Value']
+            config.update(new_config)
+            debug(sys._getframe().f_code.co_name, 
+                sys._getframe().f_lineno,
+                "Merging configurations for %s" % nexmodata['to'])
+        except Exception:
+            debug(sys._getframe().f_code.co_name, 
+                sys._getframe().f_lineno,
+                "Configuration for %s not found" % nexmodata.get('to', 'none'))
 
         debug(sys._getframe().f_code.co_name, 
                 sys._getframe().f_lineno, 
@@ -32,18 +50,15 @@ def handler(event, context):
         action = qs[1]
         direction = qs[2]
 
+        app_url = "https://" + event['params']['header']['Host'] + "/" + event['context']['stage']
+
         if action == 'event':
-            if 'status' in event['body-json']:
-                action = event['body-json']['status']
-            elif 'type' in event['body-json']:
-                action = event['body-json']['type'].replace(':', '_')
+            if 'status' in nexmodata:
+                action = nexmodata['status']
+            elif 'type' in nexmodata:
+                action = nexmodata['type'].replace(':', '_')
             else:
                 action = 'undefined'
-
-        if action == 'answer':
-            nexmodata = event['params']['querystring']
-        else:
-            nexmodata = event['body-json']
 
         function = direction + "_" + action
         debug(sys._getframe().f_code.co_name, 
@@ -62,9 +77,14 @@ def handler(event, context):
             "ERROR: Invalid Key %s" % e.args[0])
         response = {}
     except Exception as e:
-        error(e.args[0], e.args[1], e.args[3])
-        response = {}
+        error(sys._getframe().f_code.co_name, 
+            sys._getframe().f_lineno,
+            e)
+        response = { }
     finally:
+        debug(sys._getframe().f_code.co_name, 
+                sys._getframe().f_lineno, 
+                json.dumps(event))
         debug(sys._getframe().f_code.co_name, 
                 sys._getframe().f_lineno, 
                 "out = %s" % json.dumps(response))
@@ -109,14 +129,14 @@ def inbound_sip_hangup(nexmodata):
 def inbound_ringing(nexmodata):
     debug(sys._getframe().f_code.co_name, 
             sys._getframe().f_lineno, 
-            json.dumps(event))
+            json.dumps(nexmodata))
     return {}
 
 # Function will onlly log
 def inbound_started(nexmodata):
     debug(sys._getframe().f_code.co_name, 
             sys._getframe().f_lineno, 
-            json.dumps(event))
+            json.dumps(nexmodata))
     return {}
 
 # Function will onlly log
@@ -136,35 +156,39 @@ def inbound_answer(nexmodata):
     debug(sys._getframe().f_code.co_name, 
             sys._getframe().f_lineno, 
             json.dumps(nexmodata))
-    return [
-        { 
-            "action": "stream",
-            "streamUrl": [ config['silence1s'] ]
-        },
-        {
-            "action": "talk",
-            "text": config['customerHello']
-        },
-        {
-            "action": "record",
-            "eventUrl": [
-                app_url + "/recording/inbound"
-            ],
-            "endOnSilence": 3,
-            "endOnKey": "#",
-            "beepStart": "true"
-        },
-        {
-            "action": "talk",
-            "text": config['customerWelcome']
-        },
-        {
-            "action": "conversation",
-            "name": "samana-support",
-            "startOnEnter": "false",
-            "musicOnHoldUrl": [ config['moh'] ]
-        }
-    ]
+    if "inbound_ncco" in config:
+        inbound_ncco =  config['inbound_ncco']
+    else:
+        inbound_ncco = [
+            { 
+                "action": "stream",
+                "streamUrl": [ config['silence1s'] ]
+            },
+            {
+                "action": "talk",
+                "text": config['customerHello']
+            },
+            {
+                "action": "record",
+                "eventUrl": [
+                    app_url + "/recording/inbound"
+                ],
+                "endOnSilence": 3,
+                "endOnKey": "#",
+                "beepStart": "true"
+            },
+            {
+                "action": "talk",
+                "text": config['customerWelcome']
+            },
+            {
+                "action": "conversation",
+                "name": "samana-support",
+                "startOnEnter": "false",
+                "musicOnHoldUrl": [ config['moh'] ]
+            }
+        ]
+    return inbound_ncco
 
 def inbound_answered(nexmodata):
     debug(sys._getframe().f_code.co_name, 
@@ -184,10 +208,17 @@ def inbound_answered(nexmodata):
                 "name=%s" % name)
     
         client = boto3.client('stepfunctions')
+        # TODO: get state machine's name from environment variable
+        inbound_data = {
+            "inbound_uuid": nexmodata['uuid'],
+            "inbound_to": nexmodata['to'],
+            "inbound_from": nexmodata['from'],
+            "inbound_conversation_uuid": nexmodata['conversation_uuid']
+        }
         response = client.start_execution(
-            stateMachineArn='arn:aws:states:us-east-1:438136544486:stateMachine:CallAgentStateMachine-sbl2yGXvxrvN',
+            stateMachineArn='arn:aws:states:us-east-1:438136544486:stateMachine:CallAgentStateMachine-6QjyqNC2wiWk',
             name=name,
-            input='{}'
+            input=json.dumps(inbound_data)
         )
         debug(sys._getframe().f_code.co_name, 
                 sys._getframe().f_lineno, 
@@ -266,35 +297,39 @@ def outbound_answer(nexmodata):
             sys._getframe().f_lineno, 
             json.dumps(nexmodata))
 
-    return [
-        { 
-            "action": "stream",
-            "streamUrl": [ config['silence1s'] ]
-        },
-        {
-            "action": "talk",
-            "text": config['agentWelcome']
-        },
-        {
-            "action": "talk",
-            "text": config['agentPlaceIntoConf']
-        },
-        {
-            "action": "conversation",
-            "name": "samana-support",
-            "startOnEnter": True
-        }#,
-#        {
-#            "action": "talk",
-#            "text": config['agentAccept'],
-#            "bargeIn": True
-#        },
-#        {
-#            "action": "input",
-#            "maxDigits": 1,
-#            "eventUrl": [ app_url + "/dtmf/outbound" ]
-#        }
-        ]
+    if "outbound_ncco" in config:
+        outbound_ncco =  config['outbound_ncco']
+    else:
+        outbound_ncco = [
+            { 
+                "action": "stream",
+                "streamUrl": [ config['silence1s'] ]
+            },
+            {
+                "action": "talk",
+                "text": config['agentWelcome']
+            },
+            {
+                "action": "talk",
+                "text": config['agentPlaceIntoConf']
+            },
+            {
+                "action": "conversation",
+                "name": "samana-support",
+                "startOnEnter": True
+            }#,
+    #        {
+    #            "action": "talk",
+    #            "text": config['agentAccept'],
+    #            "bargeIn": True
+    #        },
+    #        {
+    #            "action": "input",
+    #            "maxDigits": 1,
+    #            "eventUrl": [ app_url + "/dtmf/outbound" ]
+    #        }
+            ]
+    return outbound_ncco
 
 def outbound_dtmf(nexmodata):
     debug(sys._getframe().f_code.co_name, 
@@ -443,8 +478,9 @@ def get_phones():
             "start")
     try:
         client = boto3.client('lambda')
+        # TODO: get lambda function from environment variable
         response = client.invoke(
-            FunctionName='iTopNexmoCallAgent-ITopNexmoOnCallPhonesFunction-U2BPC04TK17J',
+            FunctionName='iTopNexmoCallAgent-ITopNexmoOnCallPhonesFunction-1A58OTIWSF7T1',
             InvocationType='RequestResponse')
         # TODO implement
         out = json.loads(response['Payload'].read())
@@ -454,6 +490,10 @@ def get_phones():
             sys._getframe().f_lineno,
             "Unable to update AgentCalls table. %s" % e.args[0])
         out = {}
+
+    debug(sys._getframe().f_code.co_name, 
+            sys._getframe().f_lineno, 
+            out)
     return out
 
 def db_addcall_queue(uuid, inbound_phone, conversation_uuid):
@@ -500,7 +540,7 @@ def db_remcall_outqueue(uuid):
 def db_register_inbound(nexmodata, agent_data):
     debug(sys._getframe().f_code.co_name, 
             sys._getframe().f_lineno, 
-            "start")
+            "nexmodata=%s, agent_data=%s" % (nexmodata, agent_data))
     try:
         db.Table(config['InboundCallTable']).put_item(Item={
             "uuid": nexmodata['uuid'],

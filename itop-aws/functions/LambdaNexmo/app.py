@@ -27,12 +27,15 @@ def handler(event, context):
 
     client = vonage.Client(application_id=application_id, private_key=private_key)
     m = getattr(client, method)
+    print("After Vonage: %s" % m)
     if m is None:
         print("Invalid Method")
         return {}
     if uuid is not None:
         if kwargs is None:
-            return m(uuid)
+            out = m(uuid)
+            print("out=%s" % out)
+            return out
         else:
             return m(uuid, kwargs)
     elif kwargs is None:

@@ -12,6 +12,7 @@ def handler(event, context):
     global config
     count = 0
     try:
+        print("DEBUG: %s" % (json.dumps(event)))
         config = db.Table(config_table).get_item(Key={ 
                 "Key": "Config" 
             })['Item']['Value']
@@ -27,6 +28,7 @@ def handler(event, context):
                 'method': 'get_call',
                 'uuid': i['uuid']
                 }).encode())
+            # TODO: replace function name with environment variable
             response = client.invoke(
                 FunctionName='arn:aws:lambda:us-east-1:438136544486:function:iTopNexmoCallAgent-ITopLambdaNexmoFunction-L7Z9NODDJRI3',
                 InvocationType='RequestResponse',

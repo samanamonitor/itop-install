@@ -21,6 +21,16 @@ def handler(event, context):
                 "Key": "Config" 
             })['Item']['Value']
 
+        inbound_to = event.get('inbound_to', None)
+        if inbound_to is not None:
+            new_config = db.Table(config_table).get_item(Key={
+                "Key": inbound_to
+                })['Item']['Value']
+            config.update(new_config)
+            debug(sys._getframe().f_code.co_name, 
+                sys._getframe().f_lineno,
+                "Merging configurations for %s" % inbound_to)
+
         out = db.Table(config['InboundQueueTable']).scan()
         if out['Count'] == 0: 
             debug(sys._getframe().f_code.co_name, 
@@ -31,7 +41,7 @@ def handler(event, context):
         inbound_uuid = out['Items'][0]['uuid']
         inbound_phone = out['Items'][0]['from']
         inbound_conversation_uuid = out['Items'][0]['conversation_uuid']
-        
+
         out = db.Table(config['outboundQueueTable']).scan()
         if out['Count'] > 0:
             debug(sys._getframe().f_code.co_name, 
@@ -79,11 +89,11 @@ def handler(event, context):
 
         
         send_email(email, inbound_phone, inbound_conversation_uuid)
-        out = call_agent(phone)
+        out = call_agent(phone, inbound_to)
         out['phonenumber'] = phone
         db_register_outbound(out, inbound_uuid, phone)
         db_addcall_outqueue(out)
-
+        out.update(event)
     except Exception as e:
         error(sys._getframe().f_code.co_name, 
             sys._getframe().f_lineno,
@@ -96,7 +106,7 @@ def handler(event, context):
 
     return out
 
-def call_agent(phone):
+def call_agent(phone, inbound_to):
     debug(sys._getframe().f_code.co_name, 
             sys._getframe().f_lineno, 
             "phone=%s" % phone)
@@ -106,10 +116,12 @@ def call_agent(phone):
         p.extend(json.dumps({
                 'phone': phone,
                 'caller_id': config['callerID'],
-                'time': datetime.now().isoformat(' ')
+                'time': datetime.now().isoformat(' '),
+                'inbound_to': inbound_to
                 }).encode())
+        # TODO: replace function name with environment variable
         response = client.invoke(
-            FunctionName='iTopNexmoCallAgent-ITopCallAgentFunction-1F8HOOMY5666A',
+            FunctionName='iTopNexmoCallAgent-ITopCallAgentFunction-1GXGABIEYLFJY',
             InvocationType='RequestResponse',
             Payload=p
             )
