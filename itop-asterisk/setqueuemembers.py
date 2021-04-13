@@ -10,16 +10,16 @@ qmembers_sched
 
 a = AstManager(config.ast_username, config.ast_secret, host=config.ast_host, prefix=config.ast_prefix)
 a.login()
-current_members = a.get_queue_members(queue)
+current_members = a.get_queue_members(config.queue)
 
 add = []
 for i in qmembers_sched:
     if i not in current_members:
-        a.add_member(queue, "IAX2/%s" % i)
-        print("Adding %s from %s" % (i, queue))
+        a.add_member(config.queue, "IAX2/%s" % i)
+        print("Adding %s from %s" % (i, config.queue))
 
 remove = []              
 for i in current_members:
     if i not in qmembers_sched:
-        a.remove_member(queue, "IAX2/%s" % i)
-        print("Removing %s from %s" % (i, queue))
+        a.remove_member(config.queue, "IAX2/%s" % i)
+        print("Removing %s from %s" % (i, config.queue))
