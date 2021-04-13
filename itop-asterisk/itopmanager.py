@@ -21,7 +21,7 @@ class iTopManager:
             "key":key,
             "output_fields":output_fields
         }
-        self.data = {
+        data = {
             'version': self.itop_rest_version,
             'json_data': json.dumps(json_data),
             'auth_user': self.username,
