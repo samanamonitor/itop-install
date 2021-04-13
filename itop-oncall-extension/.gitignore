@@ -1,2 +1,4 @@
 oncall-module/*~
 oncall-module/*.old
+oncall-dashlet
+*.zip
