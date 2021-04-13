@@ -7,7 +7,7 @@ if len(sys.argv) != 2:
     print("Usage: %s <queue number>" % sys.argv[0])
     exit(1)
 
-queue = argv[1]
+queue = sys.argv[1]
 i = iTopManager(config.itop_user, config.itop_pw, 
     host=config.itop_host, port=config.itop_port)
 qmembers_sched=i.get_scheduled_members()
