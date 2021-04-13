@@ -13,6 +13,7 @@ class iTopManager:
         self.protocol = protocol
         self.path = path
         self.itop_rest_version = itop_rest_version
+
     def query(self, operation, classname, key, output_fields):
         json_data = {
             "operation":operation,
@@ -28,6 +29,7 @@ class iTopManager:
         }
         res = post("%s://%s:%s%s" % (self.protocol, self.host, self.port, self.path), data=data)
         return res.json()
+
     def get_scheduled_members(self):
         members = self.query(operation="core/get", classname="OnCall", key="SELECT OnCall "
             "WHERE DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') >= day "
