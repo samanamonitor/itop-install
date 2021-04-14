@@ -39,6 +39,8 @@ class iTopManager:
             "AND  (type = 'Primary' OR type = 'Backup' OR type = 'Manager')",
             output_fields="number,email,type")
         qmembers_sched = []
+        if members['objects'] is None:
+            return qmembers_sched
         for o in members['objects'].keys():
             qmembers_sched += [members['objects'][o]['fields']['number']]
         return qmembers_sched

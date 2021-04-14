@@ -21,7 +21,7 @@ add = []
 for i in qmembers_sched:
     if i not in current_members:
         a.add_member(queue, "IAX2/%s" % i)
-        print("Adding %s from %s" % (i, queue))
+        print("Adding %s to %s" % (i, queue))
 
 remove = []              
 for i in current_members:
