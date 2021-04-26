@@ -1,4 +1,4 @@
-* Instructions to install Samana PBX
+# Instructions to install Samana PBX
 
 1. Copy sendqueuereport.py to /usr/local/bin
 2. chmod +x /usr/local/bin/sendqueuereport.py
