@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+[ -f /etc/default/sendqueuereport ]
+
+source /etc/default/sendqueuereport
+
+/usr/local/bin/sendqueuereport.py ${EMAIL_RECIPIENT} ${FILE_PATH}

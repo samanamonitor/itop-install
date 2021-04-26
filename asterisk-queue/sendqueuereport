@@ -1,0 +1,5 @@
+# Replace with valid email address
+EMAIL_RECIPIENT=recipient@samanagroup.com 
+
+# Modify path if needed
+FILE_PATH=/var/log/asterisk/queue_log.1
