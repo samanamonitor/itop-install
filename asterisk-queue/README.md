@@ -11,3 +11,14 @@
 * Run the installer and provide the variables needed
 
 `asterisk-queue/install.sh`
+
+
+# Instructions to compile installer
+
+* Run make
+
+`make publish`
+
+# Installer cleanup
+
+`make clean`
