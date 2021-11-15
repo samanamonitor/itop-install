@@ -15,7 +15,6 @@ class AstManager:
         self.port = port
         self.protocol = protocol
         self.prefix=prefix
-        self.login()
 
     def _request(self, data):
         qs = urlencode(data)
