@@ -49,6 +49,11 @@ class AstManager:
             'secret': self.secret
             })
 
+    def logoff(self):
+        self._request({
+            'action': 'logoff'
+            })
+
     def add_member(self, queue, interface):
         self._request({
             'action': 'QueueAdd',
