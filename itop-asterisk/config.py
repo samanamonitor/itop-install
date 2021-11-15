@@ -1,8 +1,1 @@
-itop_user='restclient'
-itop_pw='XrcKpT23jYDfxN6'
-itop_host='192.168.0.33'
-itop_port='8080'
-ast_username='itop'
-ast_secret='23zcgjxDrqvBA3PfwjwY'
-ast_host='192.168.0.51'
-ast_prefix='/asterisk'
+
