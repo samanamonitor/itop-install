@@ -20,3 +20,5 @@ install -o root -g root -m 0755 sendqueuereport.py /usr/local/bin
 install -o root -g root -m 0644 sendqueuereport /etc/default
 
 sed -i -e "s/^EMAIL_RECIPIENT.*/EMAIL_RECIPIENT=${EMAIL_RECIPIENT}" /etc/default/sendqueuereport
+
+# TODO: add rest of trixbox configuration
