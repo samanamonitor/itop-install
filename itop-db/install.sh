@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-DBPASS$1
+DBPASS=$1
 
 if [ -z "$DBPASS" ]; then
     echo "USAGE: $0 <db pass>" >&2
