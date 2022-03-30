@@ -38,13 +38,13 @@ create_dir_if_not_exist $SAMANA_PATH
 IMAGE=$(docker image ls -q itop-web-img:v1)
 if [ -z "$IMAGE" ]; then
     docker build -t itop-web-img:v1 .
-    for d in $dirs; do
-        create_bind $d
-    done
-
-    chmod +rx /var/lib/docker/volumes
-    chmod +r /var/lib/docker/
 fi
+for d in $dirs; do
+    create_bind $d
+done
+
+chmod +rx /var/lib/docker/volumes
+chmod +r /var/lib/docker/
 
 
 docker run -p 80:80 -p 443:443 -d  \
