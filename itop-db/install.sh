@@ -30,7 +30,7 @@ create_vol_if_not_exist() {
 create_lnk_if_not_exist() {
     local vol=$1
     local lnk=$2
-    if [ ! -l $lnk ]; then
+    if [ ! -L $lnk ]; then
         ln -s $(docker inspect $vol | jq -r .[0].Mountpoint) $lnk
     fi
 }
