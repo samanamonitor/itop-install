@@ -19,7 +19,7 @@ create_if_not_exist() {
     fi
 }
 
-IMAGE=$(docker image ls -q itop-web-img:v1)
+IMAGE=$(docker image ls -q itop-db-img:v1)
 if [ -z "$IMAGE" ]; then
     docker build -t itop-db-img:v1  . --build-arg DBPASS='$DBPASS'
 fi
