@@ -45,7 +45,7 @@ create_dir_if_not_exist $SAMANA_PATH
 
 IMAGE=$(docker image ls -q itop-db-img:v1)
 if [ -z "$IMAGE" ]; then
-    docker build -t itop-db-img:v1 .
+    docker build -t itop-db-img:v1  . --build-arg DBPASS="$DBPASS"
 fi
 for d in $dirs; do
     create_bind $d
