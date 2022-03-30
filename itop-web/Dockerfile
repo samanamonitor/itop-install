@@ -1,4 +1,4 @@
-FROM ubuntu:bionic as itop-web-img
+FROM ubuntu:focal as itop-web-img
 EXPOSE 80
 EXPOSE 443
 COPY itop-web.sh /tmp/itop-web.sh
