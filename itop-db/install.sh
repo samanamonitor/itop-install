@@ -46,13 +46,13 @@ create_dir_if_not_exist $SAMANA_PATH
 IMAGE=$(docker image ls -q itop-db-img:v1)
 if [ -z "$IMAGE" ]; then
     docker build -t itop-db-img:v1 .
-    for d in $dirs; do
-        create_bind $d
-    done
-
-    chmod +rx /var/lib/docker/volumes
-    chmod +r /var/lib/docker/
 fi
+for d in $dirs; do
+    create_bind $d
+done
+
+chmod +rx /var/lib/docker/volumes
+chmod +r /var/lib/docker/
 
 docker run -p 3306:3306 -d \
     --mount source=itop_db,target=/var/lib/mysql \
