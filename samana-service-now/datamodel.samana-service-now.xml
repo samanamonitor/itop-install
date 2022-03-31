@@ -35,13 +35,6 @@
           <is_null_allowed>false</is_null_allowed>
           <display_style/>
         </field>
-        <field id="org_id" xsi:type="AttributeExternalKey">
-          <sql>org_id</sql>
-          <is_null_allowed>false</is_null_allowed>
-          <on_target_delete>DEL_MANUAL</on_target_delete>
-          <target_class>Organization</target_class>
-          <display_style>select</display_style>
-        </field>
         <field id="incindent_id" xsi:type="AttributeExternalKey">
           <sql>incident_id</sql>
           <is_null_allowed>false</is_null_allowed>
