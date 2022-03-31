@@ -56,6 +56,9 @@
             <item id="external_id">
               <rank>3</rank>
             </item>
+            <item id="name">
+              <rank>4</rank>
+            </item>
           </items>
         </details>
         <search>
