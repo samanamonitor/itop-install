@@ -3,7 +3,7 @@
   <constants>
   </constants>
   <classes>
-    <class id="ExternalINC" _delta="define">
+    <class id="external_inc" _delta="define">
       <parent>FunctionalCI</parent>
       <properties>
         <category>searchable,structure</category>
@@ -11,7 +11,6 @@
         <key_type>autoincrement</key_type>
         <db_table>externalinc</db_table>
         <db_key_field>id</db_key_field>
-        <db_final_class_field>finalclass</db_final_class_field>
         <naming>
           <format>%1$s</format>
           <attributes>
@@ -77,7 +76,7 @@
     <groups>
       <group id="external_inc">
         <classes>
-          <class id="ExternalINC" />
+          <class id="external_inc" />
         </classes>
       </group>
     </groups>
