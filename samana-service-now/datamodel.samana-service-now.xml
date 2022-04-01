@@ -75,8 +75,29 @@
   </menus>
   <user_rights>
     <groups>
+      <group id="external_inc">
+        <classes>
+          <class id="ExternalINC" />
+        </classes>
+      </group>
     </groups>
     <profiles>
+      <profile id="60" _delta="define">
+        <name>ExternalINCProfile</name>
+        <description>
+          Allows access to the externalINC table.
+        </description>
+        <groups>
+          <group id="external_inc">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
     </profiles>
   </user_rights>
 </itop_design>
