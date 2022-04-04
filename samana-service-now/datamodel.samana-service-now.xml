@@ -3,7 +3,7 @@
   <constants>
   </constants>
   <classes>
-    <class id="ExternalIncident" _delta="define">
+    <class id="ExternalIncident/External Incident" _delta="define">
       <parent>FunctionalCI</parent>
       <properties>
         <category>searchable,structure</category>
