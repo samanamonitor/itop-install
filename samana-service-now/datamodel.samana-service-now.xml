@@ -3,7 +3,7 @@
   <constants>
   </constants>
   <classes>
-    <class id="ExternalInc" _delta="define">
+    <class id="External Incident" _delta="define">
       <parent>FunctionalCI</parent>
       <properties>
         <category>searchable,structure</category>
@@ -14,7 +14,7 @@
         <naming>
           <format>%1$s</format>
           <attributes>
-            <attribute id="name">External Incident</attribute>
+            <attribute id="name"/>
           </attributes>
         </naming>
         <display_template/>
@@ -76,15 +76,15 @@
     <groups>
       <group id="external_inc">
         <classes>
-          <class id="external_inc" />
+          <class id="External Incident" />
         </classes>
       </group>
     </groups>
     <profiles>
       <profile id="60" _delta="define">
-        <name>ExternalINCProfile</name>
+        <name>External Incident</name>
         <description>
-          Allows access to the externalINC table.
+          Allows access to the External Incident table.
         </description>
         <groups>
           <group id="external_inc">
