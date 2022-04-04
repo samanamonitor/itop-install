@@ -3,18 +3,18 @@
   <constants>
   </constants>
   <classes>
-    <class id="external_inc" _delta="define">
+    <class id="ExternalInc" _delta="define">
       <parent>FunctionalCI</parent>
       <properties>
         <category>searchable,structure</category>
         <abstract>false</abstract>
         <key_type>autoincrement</key_type>
-        <db_table>externalinc</db_table>
+        <db_table>external_inc</db_table>
         <db_key_field>id</db_key_field>
         <naming>
           <format>%1$s</format>
           <attributes>
-            <attribute id="name"/>
+            <attribute id="name">External Incident</attribute>
           </attributes>
         </naming>
         <display_template/>
