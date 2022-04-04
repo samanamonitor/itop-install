@@ -76,7 +76,8 @@
     <groups>
       <group id="external_inc">
         <classes>
-          <class id="External Incident" />
+          <class id="ExternalIncident" />
+          <class id="Incident"/>
         </classes>
       </group>
     </groups>
