@@ -27,7 +27,7 @@ delete_lnk_if_exist() {
     fi
 }
 
-delte_bind() {
+delete_bind() {
     local dir=$1
     delete_vol_if_exist itop_$dir
     delete_lnk_if_exist itop_$dir $SAMANA_PATH/$dir
