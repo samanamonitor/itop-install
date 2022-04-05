@@ -80,6 +80,20 @@
     </class>
   </classes>
   <menus>
+    <menu id="ConfigManagementOverview" xsi:type="DashboardMenuNode" _delta="must_exist">
+      <definition>
+        <cells>
+          <cell id="2" _delta="must_exist">
+            <dashlets>
+              <dashlet id="99" xsi:type="DashletBadge" _delta="define">
+                <rank>8</rank>
+                <class>ExternalIncident</class>
+              </dashlet>
+            </dashlets>
+          </cell>
+        </cells>
+      </definition>
+    </menu>
   </menus>
   <user_rights>
     <groups>
