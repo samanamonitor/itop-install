@@ -9,7 +9,7 @@
         <category>searchable,structure</category>
         <abstract>false</abstract>
         <key_type>autoincrement</key_type>
-        <db_table>external_inc</db_table>
+        <db_table>externalincident</db_table>
         <db_key_field>id</db_key_field>
         <naming>
           <format>%1$s</format>
@@ -68,7 +68,7 @@
           </items>
         </search>
       </presentation>
-     </class>
+    </class>
     <class id="Model" _delta="must_exist">
       <fields>
         <field id="type" xsi:type="AttributeEnum">
@@ -97,30 +97,6 @@
   </menus>
   <user_rights>
     <groups>
-      <group id="external_inc">
-        <classes>
-          <class id="ExternalIncident" />
-          <class id="Incident"/>
-        </classes>
-      </group>
     </groups>
-    <profiles>
-      <profile id="60" _delta="define">
-        <name>External Incident</name>
-        <description>
-          Allows access to the External Incident table.
-        </description>
-        <groups>
-          <group id="external_inc">
-            <actions>
-              <action id="action:write">allow</action>
-              <action id="action:bulk write">allow</action>
-              <action id="action:read">allow</action>
-              <action id="action:bulk read">allow</action>
-            </actions>
-          </group>
-        </groups>
-      </profile>
-    </profiles>
   </user_rights>
 </itop_design>
