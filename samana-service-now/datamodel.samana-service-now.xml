@@ -73,7 +73,7 @@
       <fields>
         <field id="type" xsi:type="AttributeEnum">
           <values>
-            <value id="ExternalIncident" _define="define">External Incident</value>
+            <value id="ExternalIncident" _delta="define">External Incident</value>
           </values>
         </field>
       </fields>
