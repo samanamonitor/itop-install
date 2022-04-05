@@ -69,6 +69,15 @@
         </search>
       </presentation>
      </class>
+    <class id="Model" _delta="must_exist">
+      <fields>
+        <field id="type" xsi:type="AttributeEnum">
+          <values>
+            <value id="ExternalIncident" _define="define">External Incident</value>
+          </values>
+        </field>
+      </fields>
+    </class>
   </classes>
   <menus>
   </menus>
