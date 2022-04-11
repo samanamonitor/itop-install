@@ -21,7 +21,6 @@
         <icon/>
         <reconciliation>
           <attributes>
-            <attribute id="name"/>
             <attribute id="org_id"/>
             <attribute id="organization_name"/>
           </attributes>
