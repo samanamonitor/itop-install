@@ -29,3 +29,10 @@ If you implement some "Hooks" (i.e. classes implementing one of the [Extension A
 		),
 
 ```
+
+### Useful Links
+- https://docs.servicenow.com/bundle/sandiego-application-development/page/app-store/dev_portal/API_reference/TableBoth/concept/TableBothAPI.html#TableBothAPI
+- https://www.servicenow.com/community/it-service-management-forum/fields-and-description-for-all-key-tables-in-service-now/m-p/558781
+- https://docs.servicenow.com/bundle/sandiego-it-service-management/page/product/incident-management/concept/c_IncidentManagement.html?cshalt=yes
+- https://developer.servicenow.com/dev.do#!/reference/api/rome/rest/c_TableAPI#table-GET
+- https://support.servicenow.com/kb?id=kb_article_view&sysparm_article=KB0860915
