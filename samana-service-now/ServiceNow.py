@@ -2,7 +2,7 @@ from requests import Request, Session
 
 
 username='samanapiuser'
-password='T$m4qAr2CZ'
+password='*********'
 url='https://siteonedev.service-now.com/api/now/table'
 itopurl='http://[2607:f998:87:8:f816:3eff:fea3:c23f]'
 
