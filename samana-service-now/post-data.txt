@@ -1,0 +1,43 @@
+POST /itop/webservices/rest.php HTTP/1.1
+Host: [2607:f998:87:8:f816:3eff:fea3:c23f]
+Accept-Encoding: identity
+Content-Length: 350
+Content-Type: multipart/form-data; boundary=0b10ec230e39d91b36092067b05997d1
+Cookie: itop-ffb5bc6b0d3ad4e791061d65c153a36b=e7hfvc4m66vp673ghkshsj2ntn
+
+--0b10ec230e39d91b36092067b05997d1
+Content-Disposition: form-data; name="version"
+
+1.3
+--0b10ec230e39d91b36092067b05997d1
+Content-Disposition: form-data; name="json_data"
+
+{"operation": "core/get", "class": "Person", "key": {"email": "email@test.com", "org_id": 3}, "output_fields": "name,org_id,email"}
+--0b10ec230e39d91b36092067b05997d1--
+
+
+
+
+
+POST /itop/webservices/rest.php HTTP/1.1
+User-Agent: PostmanRuntime/7.28.4
+Accept: */*
+Cache-Control: no-cache
+Postman-Token: c288684d-31f3-4dcb-9526-6294fb717641
+Host: [2607:f998:87:8:f816:3eff:fea3:c23f]
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Content-Type: multipart/form-data; boundary=--------------------------724083360336715941740726
+Cookie: itop-ffb5bc6b0d3ad4e791061d65c153a36b=29udfqqvudb387vpq8g70dkqf3
+Content-Length: 393
+
+----------------------------724083360336715941740726
+Content-Disposition: form-data; name="version"
+
+1.3
+----------------------------724083360336715941740726
+Content-Disposition: form-data; name="json_data"
+
+{"operation":"core/get","class":"Person","key":{"email":"email@test.com", "org_id":3},"output_fields":"name, org_id,id"}
+----------------------------724083360336715941740726--
+

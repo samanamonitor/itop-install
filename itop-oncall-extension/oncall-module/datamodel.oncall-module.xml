@@ -26,33 +26,33 @@
           <default_value/>
           <is_null_allowed>false</is_null_allowed>
         </field>
-	<field id="repeat_until_end_of" xsi:type="AttributeDate">
+        <field id="repeat_until_end_of" xsi:type="AttributeDate">
           <sql>repeat_until_end_of</sql>
           <default_value/>
           <is_null_allowed>false</is_null_allowed>
         </field>
-	<field id="start_time" xsi:type="AttributeDateTime">
+        <field id="start_time" xsi:type="AttributeDateTime">
           <sql>start_time</sql>
           <default_value/>
           <is_null_allowed>false</is_null_allowed>
         </field>
-	<field id="end_time" xsi:type="AttributeDateTime">
+        <field id="end_time" xsi:type="AttributeDateTime">
           <sql>end_time</sql>
           <default_value/>
           <is_null_allowed>false</is_null_allowed>
         </field>
-	<field id="person_external_id" xsi:type="AttributeExternalKey">
+        <field id="person_external_id" xsi:type="AttributeExternalKey">
           <sql>person_external_id</sql>
           <is_null_allowed>false</is_null_allowed>
           <on_target_delete>DEL_MANUAL</on_target_delete>
           <target_class>Person</target_class>
           <display_style>select</display_style>
         </field>
-	<field id="contact_last_name" xsi:type="AttributeExternalField">
+        <field id="contact_last_name" xsi:type="AttributeExternalField">
           <extkey_attcode>person_external_id</extkey_attcode>
           <target_attcode>name</target_attcode>
         </field>
-	<field id="contact_first_name" xsi:type="AttributeExternalField">
+        <field id="contact_first_name" xsi:type="AttributeExternalField">
           <extkey_attcode>person_external_id</extkey_attcode>
           <target_attcode>first_name</target_attcode>
         </field>
@@ -60,11 +60,11 @@
           <extkey_attcode>person_external_id</extkey_attcode>
           <target_attcode>phone</target_attcode>
         </field>
-	<field id="email" xsi:type="AttributeExternalField">
+        <field id="email" xsi:type="AttributeExternalField">
           <extkey_attcode>person_external_id</extkey_attcode>
           <target_attcode>email</target_attcode>
         </field>
-	<field id="type" xsi:type="AttributeEnum">
+        <field id="type" xsi:type="AttributeEnum">
           <sql>type</sql>
           <is_null_allowed>false</is_null_allowed>
 		  <values>
@@ -77,46 +77,46 @@
         </field>
       </fields>
       <methods>
-	<method id="DoCheckToWrite" _delta="define">
-	  <static>false</static>
-	  <access>public</access>
-	  <code><![CDATA[
-public function DoCheckToWrite(){
-    $id = $this->Get('person_external_id');
-    if(!is_null($id) && $id != 0){
-        $oPerson = MetaModel::GetObject('Person', $id, false);
+        <method id="DoCheckToWrite" _delta="define">
+          <static>false</static>
+          <access>public</access>
+          <code><![CDATA[
+            public function DoCheckToWrite(){
+              $id = $this->Get('person_external_id');
+              if(!is_null($id) && $id != 0){
+                  $oPerson = MetaModel::GetObject('Person', $id, false);
 
-        $this->Set('name',$oPerson->Get('first_name').' '.$oPerson->Get('name'));
-        $this->Set('org_id',$oPerson->Get('org_id'));
-    }
-    parent::DoCheckToWrite();
+                  $this->Set('name',$oPerson->Get('first_name').' '.$oPerson->Get('name'));
+                  $this->Set('org_id',$oPerson->Get('org_id'));
+              }
+              parent::DoCheckToWrite();
 
-    if(MetaModel::IsValidAttCode(get_class($this), 'day')
-        && MetaModel::IsValidAttCode(get_class($this), 'repeat_until_end_of')
-        && (AttributeDateTime::GetAsUnixSeconds($this->Get('day'))
-            > AttributeDateTime::GetAsUnixSeconds($this->Get('repeat_until_end_of'))
-        )
-    ){
-        $this->m_aCheckIssues[] = Dict::Format('Class:Error:RepeatUntilEndOfMustBeGreaterThanDay');
-    }
+              if(MetaModel::IsValidAttCode(get_class($this), 'day')
+                  && MetaModel::IsValidAttCode(get_class($this), 'repeat_until_end_of')
+                  && (AttributeDateTime::GetAsUnixSeconds($this->Get('day'))
+                      > AttributeDateTime::GetAsUnixSeconds($this->Get('repeat_until_end_of'))
+                  )
+              ){
+                  $this->m_aCheckIssues[] = Dict::Format('Class:Error:RepeatUntilEndOfMustBeGreaterThanDay');
+              }
 
-    if(MetaModel::IsValidAttCode(get_class($this), 'start_time')
-        && MetaModel::IsValidAttCode(get_class($this), 'end_time')
-    ){
-        if(AttributeDateTime::GetAsUnixSeconds($this->Get('start_time'))
-            > AttributeDateTime::GetAsUnixSeconds($this->Get('end_time'))
-        ){
-	    $this->m_aCheckIssues[] = Dict::Format('Class:Error:EndTimeMustBeGreaterThanStartTime');
-	}elseif(date("z-Y", AttributeDateTime::GetAsUnixSeconds($this->Get('start_time')))
-	    <> date("z-Y", AttributeDateTime::GetAsUnixSeconds($this->Get('end_time')))
-	){
-	    $this->m_aCheckIssues[] = Dict::Format('Class:Error:StartTimeMustBeSameTimeAsEndTime');
-	}
-    }
-}
-]]>
-</code>
-	</method>
+              if(MetaModel::IsValidAttCode(get_class($this), 'start_time')
+                  && MetaModel::IsValidAttCode(get_class($this), 'end_time')
+              ){
+                  if(AttributeDateTime::GetAsUnixSeconds($this->Get('start_time'))
+                      > AttributeDateTime::GetAsUnixSeconds($this->Get('end_time'))
+                  ){
+                $this->m_aCheckIssues[] = Dict::Format('Class:Error:EndTimeMustBeGreaterThanStartTime');
+            }elseif(date("z-Y", AttributeDateTime::GetAsUnixSeconds($this->Get('start_time')))
+                <> date("z-Y", AttributeDateTime::GetAsUnixSeconds($this->Get('end_time')))
+            ){
+                $this->m_aCheckIssues[] = Dict::Format('Class:Error:StartTimeMustBeSameTimeAsEndTime');
+            }
+              }
+            }
+          ]]>
+          </code>
+        </method>
       </methods>
       <!-- <relations> -->
       <!-- 	<relation id="impacts"> -->
@@ -142,7 +142,7 @@ public function DoCheckToWrite(){
             <item id="number">
               <rank>4</rank>
             </item>
-	    <item id="email">
+            <item id="email">
               <rank>5</rank>
             </item>
             <item id="day">
@@ -151,10 +151,10 @@ public function DoCheckToWrite(){
            <item id="repeat_until_end_of">
               <rank>11</rank>
            </item>
-	   <item id="start_time">
+            <item id="start_time">
               <rank>12</rank>
            </item>
-	   <item id="end_time">
+            <item id="end_time">
               <rank>13</rank>
            </item>
             <item id="type">
@@ -173,13 +173,13 @@ public function DoCheckToWrite(){
             <item id="day">
               <rank>10</rank>
             </item>
-	    <item id="repeat_until_end_of">
+            <item id="repeat_until_end_of">
               <rank>15</rank>
             </item>
-	    <item id="start_time">
+            <item id="start_time">
               <rank>16</rank>
             </item>
-	    <item id="end_time">
+            <item id="end_time">
               <rank>17</rank>
             </item>
             <item id="contact_last_name">
@@ -210,13 +210,13 @@ public function DoCheckToWrite(){
             <item id="day">
               <rank>10</rank>
             </item>
-	    <item id="repeat_until_end_of">
+            <item id="repeat_until_end_of">
               <rank>15</rank>
             </item>
-	    <item id="start_time">
+            <item id="start_time">
               <rank>16</rank>
             </item>
-	    <item id="end_time">
+            <item id="end_time">
               <rank>17</rank>
             </item>
             <item id="contact_last_name">
@@ -240,11 +240,11 @@ public function DoCheckToWrite(){
     </class>
     <class id="Model" _delta="must_exist">
       <fields>
-	<field id="type" xsi:type="AttributeEnum">
-	  <values>
-	    <value id="OnCall" _define="define">OnCall</value>
-	  </values>
-	</field>
+        <field id="type" xsi:type="AttributeEnum">
+          <values>
+            <value id="OnCall" _define="define">OnCall</value>
+          </values>
+        </field>
       </fields>
     </class>
   </classes>
@@ -267,41 +267,41 @@ public function DoCheckToWrite(){
   <user_rights>
     <groups>
       <group id="OnCallSchedule">
-	<classes>
-	  <class id="OnCall"/>
-	</classes>
+        <classes>
+          <class id="OnCall"/>
+        </classes>
       </group>
       <group id="OnCallREST">
-	<classes>
-	  <class id="OnCall"/>
-	  <class id="User"/>	  
-	  <class id="Contact"/>	  
-	</classes>
+        <classes>
+          <class id="OnCall"/>
+          <class id="User"/>	  
+          <class id="Contact"/>	  
+        </classes>
       </group>      
     </groups>
     <profiles>
       <profile id="50" _delta="define">
-	<name>On Call Scheduler</name>
-	<description>
-	  A user in charge of assigning employees for oncall. In other words, a user that can create the Functional CI OnCall.
-	</description>
-	<groups>
-	  <group id="OnCallSchedule">
-	    <actions>
-	      <action id="action:write">allow</action>	    
-	      <action id="action:bulk write">allow</action>
-	      <action id="action:read">allow</action>	    
-	      <action id="action:bulk read">allow</action>
-	    </actions>
-	  </group>
-	</groups>
+      	<name>On Call Scheduler</name>
+      	<description>
+      	  A user in charge of assigning employees for oncall. In other words, a user that can create the Functional CI OnCall.
+      	</description>
+      	<groups>
+      	  <group id="OnCallSchedule">
+      	    <actions>
+      	      <action id="action:write">allow</action>	    
+      	      <action id="action:bulk write">allow</action>
+      	      <action id="action:read">allow</action>	    
+      	      <action id="action:bulk read">allow</action>
+      	    </actions>
+      	  </group>
+      	</groups>
       </profile>
       <profile id="51" _delta="define">
-	<name>On Call REST Client</name>
-	<description>
-	  A client allowed to read OnCall, User, and URP_UserProfile
-	</description>
-	<groups>
+        <name>On Call REST Client</name>
+        <description>
+          A client allowed to read OnCall, User, and URP_UserProfile
+        </description>
+        <groups>
           <group id="OnCallREST">
             <actions>
               <action id="action:read">allow</action>	    
@@ -343,60 +343,60 @@ public function DoCheckToWrite(){
     </dictionary>
   </dictionaries>
   <snippets>
-  <snippet id="OnCall Dashlet" _delta="define">
-    <placement>core</placement>
-    <rank>100</rank>
-    <content><![CDATA[
-    class DashletOnCall extends Dashlet
-    {
-      public function __construct($oModelReflection, $sId)
+    <snippet id="OnCall Dashlet" _delta="define">
+      <placement>core</placement>
+      <rank>100</rank>
+      <content><![CDATA[
+      class DashletOnCall extends Dashlet
       {
-        parent::__construct($oModelReflection, $sId);
-      }
-
-      static public function GetInfo()
-      {
-        return array(
-          'label' => Dict::S('UI:DashletIframe:OnCall'),
-          'icon' => 'env-'.utils::GetCurrentEnvironment().'/oncall-module/images/calendar-icon.png',
-          'description' => Dict::S('UI:DashletIframe:Description'),
-        );
-      }
-
-      public function GetPropertiesFields(DesignerForm $oForm)
-      {
-        
-      }
-
-      public function Render($oPage, $bEditMode = false, $aExtraParams = array())
-      {
-	$oPage->add_linked_stylesheet("https://cdn.jsdelivr.net/npm/fullcalendar@5.5.1/main.min.css");
-	$oPage->add_linked_script("https://cdn.jsdelivr.net/npm/fullcalendar@5.5.1/main.min.js");
-
-        $sId = utils::GetSafeId('dashlet_iframe_'.($bEditMode? 'edit_' : '').$this->sId);
-
-        $oPage->add('<div class="dashlet-content">');
-
-	$oPage->add('<div id="cal_'.$sId.'"></div>');
-	$oPage->add_script('
-          document.addEventListener("DOMContentLoaded", function() {
-            var calendarEl = document.getElementById("cal_'.$sId.'");
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: "dayGridMonth"
-            });
-            calendar.render();
-          });
-	');
-
-        if($bEditMode)
+        public function __construct($oModelReflection, $sId)
         {
-          $oPage->add('<div style="width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; cursor: not-allowed;"></div>');
+          parent::__construct($oModelReflection, $sId);
         }
 
-        $oPage->add('</div>');
+        static public function GetInfo()
+        {
+          return array(
+            'label' => Dict::S('UI:DashletIframe:OnCall'),
+            'icon' => 'env-'.utils::GetCurrentEnvironment().'/oncall-module/images/calendar-icon.png',
+            'description' => Dict::S('UI:DashletIframe:Description'),
+          );
+        }
+
+        public function GetPropertiesFields(DesignerForm $oForm)
+        {
+          
+        }
+
+        public function Render($oPage, $bEditMode = false, $aExtraParams = array())
+        {
+  	$oPage->add_linked_stylesheet("https://cdn.jsdelivr.net/npm/fullcalendar@5.5.1/main.min.css");
+  	$oPage->add_linked_script("https://cdn.jsdelivr.net/npm/fullcalendar@5.5.1/main.min.js");
+
+          $sId = utils::GetSafeId('dashlet_iframe_'.($bEditMode? 'edit_' : '').$this->sId);
+
+          $oPage->add('<div class="dashlet-content">');
+
+  	$oPage->add('<div id="cal_'.$sId.'"></div>');
+  	$oPage->add_script('
+            document.addEventListener("DOMContentLoaded", function() {
+              var calendarEl = document.getElementById("cal_'.$sId.'");
+              var calendar = new FullCalendar.Calendar(calendarEl, {
+              initialView: "dayGridMonth"
+              });
+              calendar.render();
+            });
+  	');
+
+          if($bEditMode)
+          {
+            $oPage->add('<div style="width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; cursor: not-allowed;"></div>');
+          }
+
+          $oPage->add('</div>');
+        }
       }
-    }
-    ]]></content>
-  </snippet>
+      ]]></content>
+    </snippet>
   </snippets>
 </itop_design>

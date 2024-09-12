@@ -1,7 +1,7 @@
 #!/bin/bash
 set -xe
 apt update
-DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata apache2 unzip \
+DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata apache2 unzip mysql-client \
         software-properties-common wget php7.2 php7.2-mysql php7.2-ldap php7.2-cli php7.2-soap \
         php7.2-json graphviz php7.2-xml php7.2-gd php7.2-zip libapache2-mod-php php7.2-mbstring
 ln -fs /usr/share/zoneinfo/US/Eastern /etc/localtime

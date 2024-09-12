@@ -1,0 +1,16 @@
+{
+  "config": {
+    "classmap-authoritative": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Samana\\iTop\\Extension\\": "src"
+    }
+  },
+  "name": "samana/samana-service-now",
+  "type": "itop-extension",
+  "description": "Samana - ServiceNow Extension",
+  "require": {
+    "composer-runtime-api": "^2.0"
+  }
+}
