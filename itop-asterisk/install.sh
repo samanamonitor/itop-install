@@ -114,6 +114,7 @@ fi
 mkdir -p ${INSTALL_DIR}
 install -o root -g root ${DIR}/astmanager.py ${INSTALL_DIR}
 install -o root -g root ${DIR}/itopmanager.py ${INSTALL_DIR}
+install -o root -g root ${DIR}/setqueuemembers.py ${INSTALL_DIR}
 cat <<EOF > ${INSTALL_DIR}/config.py
 itop_pw='$itop_pw'
 itop_user='$itop_user'
