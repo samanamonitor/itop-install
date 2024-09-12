@@ -131,8 +131,8 @@ EOF
 
 set +e
 docker_data=$(docker image inspect itopasterisk:latest 2>/dev/null)
-set -e
 rc=$?
+set -e
 
 if [ "$rc" != "0" ]; then
     docker build -t itopasterisk .
