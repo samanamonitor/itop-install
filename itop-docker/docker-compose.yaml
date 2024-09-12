@@ -6,6 +6,11 @@ services:
     env_file: vars.env
     volumes:
       - "mariadb:/var/lib/mysql"
+  web:
+    image: apache
+    restart: always
+    env_file: vars.env
+    
 
 volumes:
   mariadb:
