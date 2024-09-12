@@ -129,7 +129,9 @@ ast_prefix='$ast_prefix'
 EOF
 
 
+set +e
 docker_data=$(docker image inspect itopasterisk:latest 2>/dev/null)
+set -e
 rc=$?
 
 if [ "$rc" != "0" ]; then
