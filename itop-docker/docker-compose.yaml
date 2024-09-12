@@ -1,0 +1,6 @@
+version: "3.4"
+services:
+  db:
+    image: mariadb
+    restart: always
+    env_file: vars.env
